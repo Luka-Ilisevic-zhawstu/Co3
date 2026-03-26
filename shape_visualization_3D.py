@@ -71,14 +71,14 @@ class Pyramid:
         return (self.b/2, self.b/2, self.h*3/4)
 
 # -----------------------------------------------------------------------------
-# 2. Placing Objects in Random Valid Position (TEST ONLY)
+# 2. Placing Objects in Random Valid Position (TEST ONLY, NO OVERLAP DETECTION)
 # -----------------------------------------------------------------------------
 
 def random_pos(o, W, D, H):
     sx, sy, sz = o.half_size()
     x = random.uniform(sx, max(sx + 0.01, W - sx))
-    y = random.uniform(sy, max(sx + 0.01, D - sy))
-    z = random.uniform(sz, max(sx + 0.01, H - sz))
+    y = random.uniform(sy, max(sy + 0.01, D - sy))
+    z = random.uniform(sz, max(sz + 0.01, H - sz))
     return (x, y, z)
 
 # -----------------------------------------------------------------------------
