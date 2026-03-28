@@ -132,40 +132,42 @@ weil wir das minimum wollen ist klar dases dann nicht sauber ist
 
 ------------------------------------------------------------
 """
+def occupied_space(objs):
+        
+    # initialize minimum object vertex coordinates in control volume
+    min_x = float("inf")
+    min_y = float("inf")
+    min_z = float("inf")
+        
+    # initialize maximum object vertex coordinates in control volume
+    max_x = float("-inf")
+    max_y = float("-inf")
+    max_z = float("-inf")
+        
+    # loop over all defined objects
+    for o in objs:
+        # defining side variable based on object class (half_size) for each axis
+        sx, sy, sz = o.half_size()
+            
+        # calculate minimum x,y and z coordinate of objects subtracting 
+        # side variable (sx) from midpoint coordinate (o.x) of each object
+        min_x = min(min_x, o.x - sx) # keep smaller value comparing stored minimum (min_x) vs current object's minimum (o.x - sx) 
+        min_y = min(min_y, o.y - sy)
+        min_z = min(min_z, o.z - sz)
+            
+        # calculate maximum x, y and z coordiante of objects adding side variable (sx)
+        # to midpoint coordinate (o.x) of each object
+        max_x = max(max_x, o.x + sx) # keep larger value comparing stored maximum (max_x) vs current object's maximum (o.x + sx)
+        max_y = max(max_y, o.y + sy)
+        max_z = max(max_z, o.z + sz)
+        
+    # calculate largest volume containing all 3D objects (caculating square volume/control volume)
+    occupied_vol = (max_x - min_x) * (max_y - min_y) * (max_z - min_z)
+    return occupied_vol
+
+
 def objective(objs, W, D, H, lam):
     # volume of the bounding box occupied by all objects
-    def occupied_space(objs):
-        
-        # initialize minimum object vertex coordinates in control volume
-        min_x = float("inf")
-        min_y = float("inf")
-        min_z = float("inf")
-        
-        # initialize maximum object vertex coordinates in control volume
-        max_x = float("-inf")
-        max_y = float("-inf")
-        max_z = float("-inf")
-        
-        # loop over all defined objects
-        for o in objs:
-            # defining side variable based on object class (half_size) for each axis
-            sx, sy, sz = o.half_size()
-            
-            # calculate minimum x,y and z coordinate of objects subtracting 
-            # side variable (sx) from midpoint coordinate (o.x) of each object
-            min_x = min(min_x, o.x - sx) # keep smaller value comparing stored minimum (min_x) vs current object's minimum (o.x - sx) 
-            min_y = min(min_y, o.y - sy)
-            min_z = min(min_z, o.z - sz)
-            
-            # calculate maximum x, y and z coordiante of objects adding side variable (sx)
-            # to midpoint coordinate (o.x) of each object
-            max_x = max(max_x, o.x + sx) # keep larger value comparing stored maximum (max_x) vs current object's maximum (o.x + sx)
-            max_y = max(max_y, o.y + sy)
-            max_z = max(max_z, o.z + sz)
-        
-        # calculate largest volume containing all 3D objects (caculating square volume/control volume)
-        occupied_vol = (max_x - min_x) * (max_y - min_y) * (max_z - min_z)
-        return occupied_vol
 
     occupied_vol = occupied_space(objs)
 
