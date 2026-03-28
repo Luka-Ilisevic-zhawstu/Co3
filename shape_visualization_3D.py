@@ -20,70 +20,10 @@ import math
 import random
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection # required for final visualization
 
-# -----------------------------------------------------------------------------
-
-# 1. Taking Shape Classes (from Luana)
-
-# -----------------------------------------------------------------------------
-
-class Cube:
-    def __init__(self, a):
-        self.a = a                      #side length
-        self.x = self.y = self.z = 0.0  #position
-    
-    def volume(self): 
-        #V = a^3
-        return (self.a ** 3)
-    
-    def half_size(self):
-        # A cube extends a/2 in every direction from its center
-        s = self.a /2
-        return (s, s, s)
-    
-class Sphere:
-    def __init__(self, r):
-        self.r = r                      #radius
-        self.x = self.y = self.z = 0.0
-
-    def volume(self):
-        #V = (4/3)*pi*r^3
-        return ((4/3)* math.pi * self.r ** 3)
-    
-    def half_size(self):
-        #A sphere extends excatly r in every direction from its center
-        return (self.r, self.r, self.r)
-    
-class Pyramid:
-    def __init__(self, b, h):
-        self.b = b                      #base length
-        self.h = h                      #height    
-        self.x = self.y = self.z = 0.0
-    
-    def volume(self):
-        #V = (1/3)* b^2*h
-        return ((1/3)* self.b ** 2 * self.h)
-    
-    def half_size(self):
-        #The center of a pyramid is at h/4 from tha base,
-        # so it extends 3/4*h upward and 1/4*h downward
-        return (self.b/2, self.b/2, self.h*3/4)
-
-# -----------------------------------------------------------------------------
-# 2. Placing Objects in Random Valid Position (TEST ONLY, NO OVERLAP DETECTION)
-# -----------------------------------------------------------------------------
-
-def random_pos(o, W, D, H):
-    sx, sy, sz = o.half_size()
-    x = random.uniform(sx, max(sx + 0.01, W - sx))
-    y = random.uniform(sy, max(sy + 0.01, D - sy))
-    z = random.uniform(sz, max(sz + 0.01, H - sz))
-    return (x, y, z)
-
-# -----------------------------------------------------------------------------
-# 3. Helpers translating vertices into faces then into shapes within printing volume
-# -----------------------------------------------------------------------------
+from create_shapes import Cube, Sphere, Pyramid
 
 def draw_cube(axes, cube, color = "navy", alpha = 0.25):
     s = cube.a/2
@@ -114,7 +54,7 @@ def draw_cube(axes, cube, color = "navy", alpha = 0.25):
     # Create shape within the coordinate system defined by our axes
     axes.add_collection3d(Poly3DCollection(faces, facecolors = color, edgecolors = "black", alpha = alpha))
     
-def draw_sphere(axes, sphere, color="gold", alpha=0.25, resolution=20):
+def draw_sphere(axes, sphere, color="gold", alpha=0.25, resolution=12):
     
     # List angles around the whole sphere East/West (longitudinally) - > 2*pi
     theta_long = []
@@ -206,10 +146,6 @@ def draw_printer_box(axes, W, D, H):
         zs = [corners[i][2], corners[j][2]]
         axes.plot(xs, ys, zs, color = "black", linewidth = 1)    
     
-# -----------------------------------------------------------------------------
-# 4. Actual Visualization Function
-# -----------------------------------------------------------------------------
-
 def visualize_objects(objects, W, D, H):
     fig = plt.figure(figsize = (10, 8))
     axes = fig.add_subplot(111, projection="3d")
@@ -249,21 +185,68 @@ def visualize_objects(objects, W, D, H):
 ### NOTE for Spyder best view achieved by changing:
 ### Tools -> Preferences -> IPython Console -> change Backend dropdown from "Inline" to Qt5
 
-objects = [
-    Cube(a = 5.0),
-    Cube(a = 3.0),
-    Sphere(r = 3.0),
-    Sphere(r = 2.0),
-    Pyramid(b = 4.0, h = 10.0),
-    Pyramid(b = 3.0, h = 4.0),
-]
 
-W, D, H = 38.0, 28.4, 38.0
 
-for o in objects:
-    o.x, o.y, o.z = random_pos(o, W, D, H)
-    
-for o in objects:
-    print(type(o).__name__, (o.x, o.y, o.z))
+# -------------------------------------------------------------
+# 6. Animation of geometric shapes
+# -------------------------------------------------------------
 
-visualize_objects(objects, W, D, H)
+def random_pos(o, W, D, H):
+    sx, sy, sz = o.half_size()
+    x = random.uniform(sx, W - sx)
+    y = random.uniform(sy, D - sy)
+    z = random.uniform(sz, H - sz)
+    return (x, y, z)
+
+def draw_layout(axes, objects, W, D, H, title="3D Printer Packing Visualization"):
+    axes.clear()
+
+    draw_printer_box(axes, W, D, H)
+
+    for obj in objects:
+        if isinstance(obj, Cube):
+            draw_cube(axes, obj)
+        elif isinstance(obj, Sphere):
+            draw_sphere(axes, obj, resolution=12)
+        elif isinstance(obj, Pyramid):
+            draw_pyramid(axes, obj)
+
+        axes.scatter(obj.x, obj.y, obj.z, color="black", s=20)
+
+    axes.set_xlim(0, W)
+    axes.set_ylim(0, D)
+    axes.set_zlim(0, H)
+
+    axes.set_xlabel("Width (X)")
+    axes.set_ylabel("Depth (Y)")
+    axes.set_zlabel("Height (Z)")
+    axes.set_title(title)
+    axes.set_box_aspect((W, D, H))
+
+
+# this is optional, comment out if you do not want to see the animation and only the final positions
+def animate_history(history, W, D, H, interval=200):
+    fig = plt.figure(figsize=(10, 8))
+    axes = fig.add_subplot(111, projection="3d")
+
+    def update(frame_idx):
+        draw_layout(
+            axes,
+            history[frame_idx],
+            W,
+            D,
+            H,
+            title=f"3D Printer Packing - Iteration {frame_idx}"
+        )
+
+    anim = FuncAnimation(
+        fig,
+        update,
+        frames=len(history),
+        interval=interval,
+        repeat=False
+    )
+
+    plt.tight_layout()
+    plt.show()
+    return anim
