@@ -1,7 +1,8 @@
 import math
 import random
 import copy
-from base.create_shapes import Cube, Sphere, Pyramid, objective
+from base.create_shapes import Cube, Sphere, Pyramid
+from base.base_math_objfunction_updated import objective
 
 # ------------------------------------------------------------
 # FIXED collision function
@@ -116,8 +117,8 @@ def perturb_object(o, W, D, H, step=2.0):
 # ------------------------------------------------------------
 # Monte Carlo optimizer
 # ------------------------------------------------------------
-def monte_carlo_optimization(objects, W=38.0, D=28.4, H=38.0 , lam=500, iterations=10000, step=2.0, seed=42):
-    random.seed(seed)
+def monte_carlo_optimization(objects, W=38.0, D=28.4, H=38.0 , lam=500, iterations=10000, step=2.0):
+    #random.seed(seed)
 
     # start from random placement
     current = clone_objects(objects)
@@ -150,10 +151,8 @@ def monte_carlo_optimization(objects, W=38.0, D=28.4, H=38.0 , lam=500, iteratio
                 best_score = candidate_score
 
         history.append(best_score)
-
-    # best = object_to_list(best)    # coordinate to list. later for creating super parents. 
-
-    return best, best_score #, history da nur die besten appended --> nicht die volle history
+        
+        return best, best_score #, history da nur die besten appended --> nicht die volle history
 
 
 # ------------------------------------------------------------
