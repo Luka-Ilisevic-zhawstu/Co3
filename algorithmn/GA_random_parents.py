@@ -88,7 +88,7 @@ def genetic_algorithm(initial_population = None):
 
     solution = converting_in_object(objects, solution)
 
-    return (-solution_fitness) , solution
+    return  solution, (-solution_fitness) 
 
 
 #import matplotlib.pyplot as plt
