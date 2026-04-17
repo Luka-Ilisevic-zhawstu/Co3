@@ -1,9 +1,9 @@
 import pandas as pd
 import time 
-from algorithmn.GA_random_parents import genetic_algorithm
-from algorithmn.monte_carlo import monte_carlo_optimization
-from algorithmn.optimizer_SA import simulated_annealing
-from base.objective_function import objective
+from optimizers.GA_random_parents import genetic_algorithm
+from optimizers.monte_carlo import monte_carlo_optimization
+from optimizers.simmulated_annealing import simulated_annealing
+from model.objective_function import objective
 import matplotlib.pyplot as plt
 from utils.converting import sort_coordinate
 from data_input.metadata import objects

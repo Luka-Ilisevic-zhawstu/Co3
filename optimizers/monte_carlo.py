@@ -1,8 +1,8 @@
 import math
 import random
 import copy
-from base.create_shapes import Cube, Sphere, Pyramid
-from base.base_math_objfunction_updated import objective
+from model.shapes import Cube, Sphere, Pyramid
+from model.base_math_objfunction_updated import objective
 
 # ------------------------------------------------------------
 # FIXED collision function

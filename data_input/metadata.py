@@ -1,4 +1,4 @@
-from base.create_shapes import Cube, Pyramid, Sphere
+from model.shapes import Cube, Pyramid, Sphere
 
 W, D, H = 38.0, 28.4, 38.0
 

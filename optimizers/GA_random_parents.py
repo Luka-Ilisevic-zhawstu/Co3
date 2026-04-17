@@ -1,6 +1,6 @@
 import pygad
 import copy
-from base.base_math_objfunction_updated import objective
+from model.base_math_objfunction_updated import objective
 from data_input.metadata import objects, W, D, H # <-----------------------------should find another solutions.
 
 def converting_in_object(objects, list_coordination):

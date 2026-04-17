@@ -15,7 +15,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
-from base.create_shapes import Cube, Sphere, Pyramid
+from model.shapes import Cube, Sphere, Pyramid
 
 
 def visualize_and_save(objects, W, D, H, output_dir, algorithm_name, epoch):

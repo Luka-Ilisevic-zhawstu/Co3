@@ -23,7 +23,7 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection # required for final visualization
 
-from base.create_shapes import Cube, Sphere, Pyramid
+from model.create_shapes import Cube, Sphere, Pyramid
 
 def draw_cube(axes, cube, color = "navy", alpha = 0.25):
     s = cube.a/2

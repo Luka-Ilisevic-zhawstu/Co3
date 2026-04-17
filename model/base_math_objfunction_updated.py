@@ -1,11 +1,36 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Mar 27 19:57:17 2026
-
-This defines the objective function and the physical space that is being used
+Created on Thu Mar 26 11:52:50 2026
 
 @author: Luka Ilisevic
 """
+
+"""
+3D-Printer Optimization
+------------------------------------------------------------
+Group 10 
+do Aido Luana, Ho Ka Men, Ilisevic Luka, Pfister Michèle
+CO3 - Optimisation and Bio-Inspired Algorithms
+ZHAW - SS26
+------------------------------------------------------------
+Optimization Problem: 3D irregular packing Problem
+Goal: Minimizing empty space in a fixed printing bed by optimally 
+placing cubes, spheres, and pyramids. 
+"""
+
+import math
+import random
+
+
+"""
+1. Objects
+Containes the volume of the object as also the half_size of them
+as they are needed to check whether the boundaries are correct or it there we're some
+collisions
+------------------------------------------------------------
+"""
+
+from model.shapes import Cube, Sphere, Pyramid
 
 """
 2. Collision Detection
@@ -20,9 +45,6 @@ if 0.0 = no collision (objects do not touch)
 if > 0.0 = collision 
 ------------------------------------------------------------
 """
-import math
-from base.create_shapes import Sphere #<------------- what is this for?
-
 def collision (obj1, obj2):
     #sphere + sphere
     #Two spheres overlap if the distance between their centers
@@ -50,7 +72,6 @@ def collision (obj1, obj2):
         return (min(overlap_x, overlap_y, overlap_z))
     return 0.0
 
-
 """
 3. Objective Function
 What we want to do: 
@@ -73,47 +94,45 @@ weil wir das minimum wollen ist klar dases dann nicht sauber ist
 
 ------------------------------------------------------------
 """
-
 def occupied_space(objs):
-    
+        
     # initialize minimum object vertex coordinates in control volume
     min_x = float("inf")
     min_y = float("inf")
     min_z = float("inf")
-    
+        
     # initialize maximum object vertex coordinates in control volume
     max_x = float("-inf")
     max_y = float("-inf")
     max_z = float("-inf")
-    
+        
     # loop over all defined objects
     for o in objs:
         # defining side variable based on object class (half_size) for each axis
         sx, sy, sz = o.half_size()
-        
+            
         # calculate minimum x,y and z coordinate of objects subtracting 
         # side variable (sx) from midpoint coordinate (o.x) of each object
         min_x = min(min_x, o.x - sx) # keep smaller value comparing stored minimum (min_x) vs current object's minimum (o.x - sx) 
         min_y = min(min_y, o.y - sy)
         min_z = min(min_z, o.z - sz)
-        
+            
         # calculate maximum x, y and z coordiante of objects adding side variable (sx)
         # to midpoint coordinate (o.x) of each object
         max_x = max(max_x, o.x + sx) # keep larger value comparing stored maximum (max_x) vs current object's maximum (o.x + sx)
         max_y = max(max_y, o.y + sy)
         max_z = max(max_z, o.z + sz)
-    
+        
     # calculate largest volume containing all 3D objects (caculating square volume/control volume)
     occupied_vol = (max_x - min_x) * (max_y - min_y) * (max_z - min_z)
     return occupied_vol
 
 
-
 def objective(objs, W, D, H, lam):
     # volume of the bounding box occupied by all objects
-    
+
     occupied_vol = occupied_space(objs)
-    
+
     penalty = 0.0
 
     # constraint 1: overlap penalty
@@ -135,3 +154,48 @@ def objective(objs, W, D, H, lam):
         penalty += max(0, o.z + sz - H)**2
 
     return occupied_vol + lam * penalty
+
+"""
+4. Random Position
+Returns a random valid position inside the print volume.
+Wichtig damit man die Figuren "verschieben" kann, die richtige/passende Positionierung
+der unterschiedlichen Figuren
+
+""" 
+def random_pos(o, W, D, H):
+    sx, sy, sz = o.half_size()
+    x = random.uniform(sx, max(sx+0.01, W-sx))
+    y = random.uniform(sy, max(sy+0.01, D-sy))
+    z = random.uniform(sz, max(sz+0.01, H-sz))
+    return (x, y, z)
+
+
+"""
+5. Baseline setzten
+objective Function mal ausprobieren um einen Wert ziu genrieren
+Wert sollte möglichst klein sein, je kleiner desto besser, Dieser Wert muss als Baseline angesehen werden
+Die optimisierungs Algorithmen die angewendet werden sollten diesen Wert noch kleiner machen. 
+Funktion gibt schon best möglichen (minimalsten Wert heraus).
+"""
+#1. Objekte Definieren und Volumen des Printers definieren ACHTUNG IN CM
+#objects = [Cube(a=5.0), Cube(a=3.0), Sphere(r=3.0), Sphere(r=2.0), Pyramid(b=4.0, h=6.0), Pyramid(b=3.0, h=4.0)]
+
+#W, D, H = 38.0, 28.4, 38.0
+
+#2. Objekte einen random starting position geben, damit man diese verbessern kann -> minimieren
+#for o in objects:
+#        o.x, o.y, o.z = random_pos(o, W, D, H)
+
+#3. objective function berrechnen:
+#f = objective(objects, W, D, H, 500)
+
+#print(f"Objective (random placement): {f:.2f}")
+#immer das gleiche Resultat, weil  die figuren klein sind, werden sie einfach random im Drucker verteilt 
+# und deshalb werden die constraints nicht verletzt
+
+# nächster schritt: 
+# Wir wollen jetzt aber die funktion anpassen damit die figuren zusammen geführt 
+# werden um so wenig platz wir möglich zu bruachen
+
+
+
