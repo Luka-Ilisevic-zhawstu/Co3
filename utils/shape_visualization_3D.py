@@ -1,10 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-
-CO3 Bioinspired Algorithms
-
-3D Visualization of Packing Problem
-
 This script visualizes the spatial arrangement of 3D objects (cubes, spheres,
 and pyramids) within a fixed printer volume. Objects are assigned positions
 in 3D space and rendered using matplotlib.
@@ -17,13 +12,12 @@ in the context of a 3D packing optimization problem.
 # --------------- Visualizing Spatial Arrangement in 3D -----------------------
 
 import math
-import random
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection # required for final visualization
 
-from base.create_shapes import Cube, Sphere, Pyramid
+from model.create_shapes import Cube, Sphere, Pyramid
 
 def draw_cube(axes, cube, color = "navy", alpha = 0.25):
     s = cube.a/2
@@ -190,13 +184,6 @@ def visualize_objects(objects, W, D, H):
 # -------------------------------------------------------------
 # 6. Animation of geometric shapes
 # -------------------------------------------------------------
-
-def random_pos(o, W, D, H):
-    sx, sy, sz = o.half_size()
-    x = random.uniform(sx, W - sx)
-    y = random.uniform(sy, D - sy)
-    z = random.uniform(sz, H - sz)
-    return (x, y, z)
 
 def draw_layout(axes, objects, W, D, H, title="3D Printer Packing Visualization"):
     axes.clear()

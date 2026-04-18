@@ -1,5 +1,5 @@
-from algorithmn.monte_carlo import monte_carlo_optimization
-from algorithmn.GA_random_parents import genetic_algorithm
+from optimizers.monte_carlo import monte_carlo_optimization
+from optimizers.GA_random_parents import genetic_algorithm
 from data_input.metadata import objects
 from utils.converting import convert_object_into_list
 

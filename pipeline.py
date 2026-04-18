@@ -1,10 +1,9 @@
 import pandas as pd
-import time 
-from algorithmn.GA_random_parents import genetic_algorithm
-from algorithmn.monte_carlo import monte_carlo_optimization
-from algorithmn.optimizer_SA import simulated_annealing
-from base.objective_function import objective
-import matplotlib.pyplot as plt
+import time
+from data_input.metadata import W, D, H
+from optimizers.GA_random_parents import genetic_algorithm
+from optimizers.monte_carlo import monte_carlo_optimization
+from optimizers.simulated_annealing import simulated_annealing
 from utils.converting import sort_coordinate
 from data_input.metadata import objects
 import os
@@ -12,11 +11,19 @@ from utils.complete_visualization import visualize_and_save
 
 def test_algorithm(algorithm, epoch):
     """
-    Test algorithm and save start time, end time, objects, and scores.
+    Run a stochastic optimization algorithm multiple times.
+    
+    Purpose:
+        - Captures randomness of optimizers
+        - Collect comparable statistics (compactness score and runtime)
+    
     Args:
-        algorithm: Algorithm function to test.
+        algorithm: Algorithm function to test returning objects and scores.
+        epoch: Defines number of independent runs
+        
     Return:
-        DataFrame with score, objects, start_time, end_time
+        DataFrame with compactness score, objects (resulting object layout), 
+        start_time, end_time
     """
 
     results_dict = {"score":[], "objects":[], "start_time":[], "end_time":[]}
@@ -31,6 +38,10 @@ def test_algorithm(algorithm, epoch):
 
 epoch = 2
 
+#------------------------------------------------------------------------------
+# Genetic Algorithm Benchmark
+#------------------------------------------------------------------------------
+
 GA_result = test_algorithm(genetic_algorithm, epoch)
 GA_result["duration(s)"] = GA_result["end_time"] - GA_result["start_time"]
 
@@ -40,7 +51,7 @@ for i in range(epoch):
     os.makedirs(output_dir, exist_ok=True)
 
     algorithm_name = "GA"
-    visualize_and_save(GA_result["objects"][i], W=38.0, D=28.4, H=38.0, output_dir = output_dir, algorithm_name = algorithm_name, epoch = i)
+    visualize_and_save(GA_result["objects"][i], W=W, D=D, H=H, output_dir = output_dir, algorithm_name = algorithm_name, epoch = i)
 
     GA_coords = sort_coordinate(GA_result["objects"][i])
     GA_coords_df = pd.DataFrame({
@@ -55,6 +66,9 @@ for i in range(epoch):
     os.makedirs(output_dir, exist_ok=True)
     GA_coords_df.to_csv(f"{output_dir}/GA_coordinates_{i}.csv", index=False)
 
+#------------------------------------------------------------------------------
+# Monte Carlo Benchmark
+#------------------------------------------------------------------------------
 
 monte_carlo_result = test_algorithm(lambda: monte_carlo_optimization(objects), epoch)
 monte_carlo_result["duration(s)"] = monte_carlo_result["end_time"] - monte_carlo_result["start_time"]
@@ -65,7 +79,7 @@ for i in range(epoch):
     output_dir = f"""output_data/picture/{algorithm_name}"""
     os.makedirs(output_dir, exist_ok=True)
 
-    visualize_and_save(monte_carlo_result["objects"][i], W=38.0, D=28.4, H=38.0, output_dir = output_dir, algorithm_name = algorithm_name, epoch = i)
+    visualize_and_save(monte_carlo_result["objects"][i], W=W, D=D, H=H, output_dir = output_dir, algorithm_name = algorithm_name, epoch = i)
 
     monte_carlo_coords = sort_coordinate(monte_carlo_result["objects"][i])
     monte_carlo_df = pd.DataFrame({
@@ -80,7 +94,11 @@ for i in range(epoch):
     os.makedirs(output_dir, exist_ok=True)
     monte_carlo_df.to_csv(f"{output_dir}/monte_carlo_coordinates_{i}.csv", index=False)
 
-simulated_annealing_result = test_algorithm(lambda: simulated_annealing(objects, objective), epoch)
+#------------------------------------------------------------------------------
+# Simulated Annealing Benchmark
+#------------------------------------------------------------------------------
+
+simulated_annealing_result = test_algorithm(lambda: simulated_annealing(objects), epoch)
 
 for i in range(epoch):
 
@@ -88,7 +106,7 @@ for i in range(epoch):
     output_dir = f"""output_data/picture/{algorithm_name}"""
     os.makedirs(output_dir, exist_ok=True)
 
-    visualize_and_save(simulated_annealing_result["objects"][i], W=38.0, D=28.4, H=38.0, output_dir = output_dir, algorithm_name = algorithm_name, epoch = i)
+    visualize_and_save(simulated_annealing_result["objects"][i], W=W, D=D, H=H, output_dir = output_dir, algorithm_name = algorithm_name, epoch = i)
 
     SA_coords = sort_coordinate(simulated_annealing_result["objects"][i])
     SA_df = pd.DataFrame({
@@ -103,6 +121,12 @@ for i in range(epoch):
     os.makedirs(output_dir, exist_ok=True)
     SA_df.to_csv(f"{output_dir}/SA_coordinates_{i}.csv", index=False)
 
+#------------------------------------------------------------------------------
+# For each run:
+#    -> Visualize object placement in space
+#    -> Convert object coordinates into structured format
+#    -> Save results as CSV for further analysis
+#------------------------------------------------------------------------------
 
 print(GA_result["score"].describe())
 print(monte_carlo_result["score"].describe())
