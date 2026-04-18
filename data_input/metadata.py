@@ -1,3 +1,11 @@
+"""
+Elements that always stay the same:
+-> Printer Dimensions
+-> Objects type, dimensions and number
+
+"""
+
+
 from model.shapes import Cube, Pyramid, Sphere
 
 W, D, H = 38.0, 28.4, 38.0

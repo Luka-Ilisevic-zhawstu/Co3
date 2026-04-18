@@ -3,12 +3,13 @@ import random
 from model.initialization import random_layout
 from model.perturbation import perturb_object, clone_objects
 from model.objective_function import objective
+from data_input.parameters import W, D, H, LAM, MC_iterations, MC_step
 
 
 # ------------------------------------------------------------
 # Monte Carlo optimizer
 # ------------------------------------------------------------
-def monte_carlo_optimization(objects, W=38.0, D=28.4, H=38.0 , lam=50000, iterations=10000, step=5.0):
+def monte_carlo_optimization(objects, W=W, D=D, H=H , lam=LAM, iterations=MC_iterations, step=MC_step):
     #random.seed(seed)
 
     # start from random placement, aligned with SA to use random_layout()

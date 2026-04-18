@@ -12,11 +12,13 @@ import random
 from model.initialization import random_layout
 from model.perturbation import perturb_object, clone_objects
 from model.objective_function import objective
+from data_input.metadata import W, D, H
+from data_input.parameters import LAM, SA_iterations, SA_step, SA_temp
 
 
   
-def simulated_annealing(objects, W = 38.0, D = 28.4, H = 38.0, 
-                        lam = 50000, n_iterations = 10000, step_size = 5.0, temp = 100, return_trace=False):
+def simulated_annealing(objects, W = W, D = D, H = H, 
+                        lam = LAM, n_iterations = SA_iterations, step_size = SA_step, temp = SA_temp, return_trace=False):
     
 #-----------------------------------------------------------------------------
 # Generating an initial solution

@@ -10,6 +10,7 @@ der unterschiedlichen Figuren
 
 import random
 import copy
+from data_input.metadata import W, D, H
 
 def random_pos(o, W, D, H):
     sx, sy, sz = o.half_size()
@@ -18,7 +19,7 @@ def random_pos(o, W, D, H):
     z = random.uniform(sz, max(sz+0.01, H-sz))
     return (x, y, z)
 
-def random_layout(objects, W = 38.0, D = 28.4, H = 38.0):
+def random_layout(objects, W = W, D = D, H = H):
     layout = copy.deepcopy(objects)
     for o in layout:
         o.x, o.y, o.z = random_pos(o, W, D, H)

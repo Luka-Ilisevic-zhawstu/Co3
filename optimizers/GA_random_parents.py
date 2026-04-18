@@ -1,7 +1,17 @@
 import pygad
-import copy
+from model.perturbation import clone_objects
 from model.objective_function import objective
-from data_input.metadata import objects, W, D, H # <-----------------------------should find another solutions.
+from data_input.metadata import objects, W, D, H
+from data_input.parameters import (
+    GA_LAM, 
+    GA_generations, 
+    GA_num_parents_mating,
+    GA_sol_per_pop,
+    GA_init_range_low,
+    GA_init_range_high,
+    GA_mutation_percent_genes,
+    )
+
 
 def converting_in_object(objects, list_coordination):
     """
@@ -15,7 +25,7 @@ def converting_in_object(objects, list_coordination):
     
     """
 
-    objs_copy = copy.deepcopy(objects)
+    objs_copy = clone_objects(objects)
     for i,  o in enumerate(objs_copy):
         o.x = list_coordination[3*i]
         o.y = list_coordination[3*i+1]
@@ -38,7 +48,7 @@ def fitness_func(ga_instance, solution, solution_idx):
     """
     objs_copy = converting_in_object(objects, solution)
 
-    return - objective(objs_copy,W,D,H,1000) # lowered from 50000 to 1000 due to lack of improvement in compactness score
+    return - objective(objs_copy, W, D, H, GA_LAM)
 
 def genetic_algorithm(initial_population = None):
     """
@@ -47,38 +57,23 @@ def genetic_algorithm(initial_population = None):
         tuple(list(float), objective_score)
     """
 
-    fitness_function = fitness_func
+    num_genes = len(objects) * 3
 
-    num_generations = 2000
-    num_parents_mating = 4
-
-    sol_per_pop = 80
-    num_genes = len(objects) * 3 # for x , y axis  
-
-    init_range_low = 0.5
-    init_range_high = 28
-
-    parent_selection_type = "sss"
-    keep_parents = 1
-
-    crossover_type = "single_point"
-
-    mutation_type = "random"
-    mutation_percent_genes = 10
-
-    ga_instance = pygad.GA(num_generations=num_generations,
-                        num_parents_mating=num_parents_mating,
-                        fitness_func=fitness_function,
-                        sol_per_pop=sol_per_pop,
-                        num_genes=num_genes,
-                        init_range_low=init_range_low,
-                        init_range_high=init_range_high,
-                        parent_selection_type=parent_selection_type,
-                        keep_parents=keep_parents,
-                        crossover_type=crossover_type,
-                        mutation_type=mutation_type,
-                        mutation_percent_genes=mutation_percent_genes,
-                        initial_population=initial_population)
+    ga_instance = pygad.GA(
+        num_generations=GA_generations,
+        num_parents_mating=GA_num_parents_mating,
+        fitness_func=fitness_func,
+        sol_per_pop=GA_sol_per_pop,
+        num_genes=num_genes,
+        init_range_low=GA_init_range_low,
+        init_range_high=GA_init_range_high,
+        parent_selection_type="sss",
+        keep_parents=1,
+        crossover_type="single_point",
+        mutation_type="random",
+        mutation_percent_genes=GA_mutation_percent_genes,
+        initial_population=initial_population
+    )
 
     ga_instance.run()
 
