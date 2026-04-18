@@ -56,7 +56,7 @@ Because objects have different shapes, the collision detection strategy depends 
 This project implements three optimization algorithms:
 
 - **Monte Carlo Optimization (MC)**
-- **Simulated Annaling (SA)**
+- **Simulated Annealing (SA)**
 - **Genetic Algorithm**
 
 All algorithms operate on the same objective function, while taking different approaches to exploring the solution space.
