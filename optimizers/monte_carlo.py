@@ -1,3 +1,18 @@
+"""
+Monte Carlo optimization for 3D object placement.
+
+This module implements a stochastic local-search procedure to improve
+the placement of objects inside a bounded 3D workspace.
+
+The algorithm starts from a randomly generated initial layout and then
+iteratively explores neighboring solutions by randomly perturbing one
+object at a time. A new candidate layout is accepted only if it improves
+the objective value. This makes the method a simple greedy Monte Carlo
+search.
+
+"""
+
+
 import random
 
 from model.initialization import random_layout
@@ -43,4 +58,4 @@ def monte_carlo_optimization(objects, W=W, D=D, H=H , lam=LAM, iterations=MC_ite
 
         history.append(best_score)
         
-    return best, best_score #, history da nur die besten appended --> nicht die volle history
+    return best, best_score

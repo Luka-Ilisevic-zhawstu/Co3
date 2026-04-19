@@ -1,3 +1,39 @@
+"""
+Execute a stochastic optimization algorithm repeatedly and record performance metrics.
+
+Purpose:
+
+This function is used to evaluate stochastic optimization algorithms over multiple
+independent runs. Since such algorithms may produce different results each time
+due to random initialization or probabilistic search behavior, repeated execution
+allows a more reliable assessment of solution quality and computational cost.
+
+For each run, the function records:
+    - the best objective score returned by the algorithm
+    - the corresponding object layout
+    - the start time of the run
+    - the end time of the run
+
+Parameters:
+
+algorithm : callable
+    Optimization function to evaluate. It must return:
+        (best_coordinates, best_score)
+    where `best_coordinates` represents the resulting object layout and
+    `best_score` is the corresponding objective value.
+epoch : int
+    Number of independent runs to perform.
+
+Returns:
+
+pandas.DataFrame
+    A DataFrame containing one row per run with the following columns:
+        - score: objective value of the best solution
+        - objects: resulting object layout
+        - start_time: timestamp at the beginning of the run
+        - end_time: timestamp at the end of the run
+"""
+
 import pandas as pd
 import time
 from data_input.metadata import W, D, H
@@ -10,21 +46,6 @@ import os
 from utils.complete_visualization import visualize_and_save
 
 def test_algorithm(algorithm, epoch):
-    """
-    Run a stochastic optimization algorithm multiple times.
-    
-    Purpose:
-        - Captures randomness of optimizers
-        - Collect comparable statistics (compactness score and runtime)
-    
-    Args:
-        algorithm: Algorithm function to test returning objects and scores.
-        epoch: Defines number of independent runs
-        
-    Return:
-        DataFrame with compactness score, objects (resulting object layout), 
-        start_time, end_time
-    """
 
     results_dict = {"score":[], "objects":[], "start_time":[], "end_time":[]}
     for _ in range(epoch):

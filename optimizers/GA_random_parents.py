@@ -1,3 +1,23 @@
+"""
+Genetic Algorithm for 3D object placement optimization.
+
+This module applies a Genetic Algorithm (GA) to optimize the placement
+of objects within a bounded 3D workspace. Each candidate solution is
+encoded as a flat list of object center coordinates:
+
+    [x1, y1, z1, x2, y2, z2, ..., xn, yn, zn]
+
+The Genetic Algorithm searches for coordinate combinations that minimize
+the objective function, which includes:
+    - occupied volume
+    - overlap penalties
+    - boundary violation penalties
+
+Because PyGAD is designed to maximize a fitness function, the objective
+value is multiplied by -1 so that minimizing the objective becomes
+equivalent to maximizing fitness.
+"""
+
 import pygad
 from model.perturbation import clone_objects
 from model.objective_function import objective

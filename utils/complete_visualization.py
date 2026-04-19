@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Complete Visualization and Coordinate Export Function
 
@@ -12,25 +11,26 @@ Single function that handles:
 import os
 import math
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from model.shapes import Cube, Sphere, Pyramid
 
 
-def visualize_and_save(objects, W, D, H, output_dir, algorithm_name, epoch):
-    """
-    Complete visualization, saving, and coordinate extraction in one function.
+# -----------------------------------------------------------------------------
+#    Complete visualization, saving, and coordinate extraction in one function.
     
-    Args:
-        objects: List of shape objects to visualize
-        W: Width of printer box
-        D: Depth of printer box
-        H: Height of printer box
-        output_dir: Directory to save output (e.g., "picture/GA")
-        algorithm_name: Name of algorithm (e.g., "GA", "Monte_Carlo", "Simulated_Annealing")
-        epoch: Epoch number for file naming
-    """
+#    Args:
+#        objects: List of shape objects to visualize
+#        W: Width of printer box
+#        D: Depth of printer box
+#        H: Height of printer box
+#        output_dir: Directory to save output (e.g., "picture/GA")
+#        algorithm_name: Name of algorithm (e.g., "GA", "Monte_Carlo", "Simulated_Annealing")
+#        epoch: Epoch number for file naming
+#------------------------------------------------------------------------------
+
+def visualize_and_save(objects, W, D, H, output_dir, algorithm_name, epoch):
+
     
     # Create output directory
     os.makedirs(output_dir, exist_ok=True)

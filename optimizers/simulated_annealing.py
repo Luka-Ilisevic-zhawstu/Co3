@@ -1,10 +1,55 @@
-# -*- coding: utf-8 -*-
 """
-Created on Fri Mar 27 20:01:57 2026
+Purpose:
+        
+Performs a Simulated Annealing (SA) optimization to improve the spatial layout 
+of objects within a bounded 3D container.
 
-simulated annealing program
+The algorithm starts from a randomly generated initial layout and iteratively 
+explores neighboring solutions by applying small perturbations to individual objects. 
+New candidate solutions are accepted based on an acceptance criterion that allows 
+both improvements and, with decreasing probability over time, worse solutions. 
+This enables the algorithm to escape local minima.
 
-@author: Luka Ilisevic
+The objective function evaluates layout quality based on packing efficiency 
+and constraint penalties, weighted by a parameter λ.
+
+Parameters:
+
+objects: list
+List of objects to be placed in the container.
+
+W, D, H: float
+Dimensions of the container (width, depth, height).
+
+lam: float
+Weighting factor for penalty terms in the objective function.
+
+n_iterations: int
+Number of iterations for the optimization process.
+
+step_size: float
+Maximum magnitude of perturbation applied to objects.
+
+temp: float
+Initial temperature controlling acceptance of worse solutions.
+
+return_trace: bool, optional
+If True, returns additional optimization history.
+
+Returns:
+
+best: list
+Best found object configuration.
+
+best_eval: float
+Objective value of the best configuration.
+
+scores: list (optional)
+History of best scores over iterations.
+
+history: list (optional)
+History of layout configurations.
+
 """
 import math
 import random

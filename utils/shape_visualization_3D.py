@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 This script visualizes the spatial arrangement of 3D objects (cubes, spheres,
 and pyramids) within a fixed printer volume. Objects are assigned positions
@@ -8,8 +7,9 @@ The visualization serves as a tool to inspect and validate object placement
 in the context of a 3D packing optimization problem. 
 
 """
-
-# --------------- Visualizing Spatial Arrangement in 3D -----------------------
+# -----------------------------------------------------------------------------
+# Visualizing Spatial Arrangement in 3D
+# -----------------------------------------------------------------------------
 
 import math
 import numpy as np

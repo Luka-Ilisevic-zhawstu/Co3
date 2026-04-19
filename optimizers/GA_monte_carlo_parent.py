@@ -3,11 +3,12 @@ from optimizers.GA_random_parents import genetic_algorithm
 from data_input.metadata import objects
 from utils.converting import convert_object_into_list
 
+#------------------------------------------------------------------------------
+# Use Monte Carlo optimization to generate parents and then put the 80 outputs into genetic algorithm
+# -----------------------------------------------------------------------------
 
 def GA_montecarlo_parent():
-    """
-    Use Monte Carlo optimization to generate parents and then put the 80 outputs into genetic algorithm
-    """
+
     epoch = 80
     initial_population = []
 

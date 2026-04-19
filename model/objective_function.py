@@ -1,24 +1,59 @@
-# -*- coding: utf-8 -*-
 """
-Created on Fri Mar 27 19:57:17 2026
+Collision detection and objective function for 3D layout optimization.
 
-This defines the objective function and the physical space that is being used
-
-@author: Luka Ilisevic
-"""
-
-"""
 1. Collision Detection
-we need to check if two objects overlap. the method how we do 
-that depends on the shape combination.
+----------------------
+This module evaluates whether two objects overlap in space. The collision
+calculation depends on the combination of object shapes:
 
-Sphere + Shpere -> exact eucladean distance check
-Combination of everything else -> Axis-Aligned Bounding Box
+- Sphere + Sphere:
+    Exact collision detection is performed using the Euclidean distance
+    between the centers of the two spheres.
 
-Returns: overlap amount
-if 0.0 = no collision (objects do not touch)
-if > 0.0 = collision 
-------------------------------------------------------------
+- Any other shape combination:
+    Collision is approximated using an Axis-Aligned Bounding Box (AABB)
+    approach. In this case, objects are treated as rectangular bounding
+    boxes aligned with the coordinate axes.
+
+The collision function returns the overlap amount:
+    - 0.0  -> no collision
+    - >0.0 -> objects overlap
+
+For sphere-sphere collisions, the overlap is computed as:
+
+    overlap = (r1 + r2) - distance(center1, center2)
+
+For AABB-based collisions, overlap is determined independently along the
+x-, y-, and z-axes. A collision exists only if overlap occurs on all
+three axes. The returned overlap value is the minimum overlap depth
+across the three directions.
+
+2. Objective Function
+---------------------
+The objective of the optimization is to minimize the volume occupied by
+a set of 3D objects inside a predefined printer workspace.
+
+The optimization seeks compact object arrangements while enforcing two
+geometric constraints:
+    1. Objects must not overlap
+    2. Objects must remain within the printer boundaries
+
+The objective function is defined as:
+
+    f = occupied_volume + lam * penalty
+
+where:
+
+    penalty = overlap_penalty + boundary_penalty
+
+The parameter `lam` (lambda) controls the strength of constraint
+enforcement:
+    - small lam: more emphasis on compactness
+    - large lam: more emphasis on feasible, non-overlapping placements
+
+In this implementation, high penalty values are used to strongly
+discourage invalid placements outside the build volume or intersecting
+object configurations.
 """
 import math
 from model.shapes import Sphere # included for sphere-specific collision detection
@@ -50,26 +85,6 @@ def collision(obj1, obj2):
         return (min(overlap_x, overlap_y, overlap_z))
     return 0.0
 
-
-"""
-2. Objective Function
-What we want to do: 
-- Minimize the volume occupied by 3D objects in a theoretical 3D printer volume
-    
-Ensure placement of objects within bounds of the theoretical printer volume without overlap -> penalties
-- the overlap penalty (contstraint 1: objects must not overlap)
-- the boundary penalty (constraint 2: objects must stay inside)
-
-Formula:
- f = occupied_vol + lam * (overlap_penalty + boundary_penalty)
-
-The parameter lam (lambda) controls how strictly contraints are enforced. 
-Higher lam = algorithm prioritizes valid placements over minimizing empty space.
-
-We will use high penalty values
-
-------------------------------------------------------------
-"""
 
 def occupied_space(objs):
     
